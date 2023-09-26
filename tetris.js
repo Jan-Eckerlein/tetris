@@ -1,6 +1,6 @@
 export const createTetrisGame = (htmlNode) => {
 	const width = 10;
-	const height = 20;
+	const height = 5;
 	const tileWidth = 30;
 	const colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan'];
 	const interval = 1000;
@@ -68,13 +68,20 @@ export const createTetrisGame = (htmlNode) => {
 		let shapeY = 0;
 
 		const moveDown = () => {
-			if (!checkCollision()) return false;
 			shapeY++;
+			if (!checkCollision()) {
+				shapeY--;
+				return false;
+			} 
 			return true;
 		};
 
 		const checkCollision = () => {
-			return shape.every((row, y) => row.every((value, x) => !value || !gameBoard[y + shapeY][x + shapeX]));
+			return shape.every((row, y) => {
+				console.log({y, shapeY, height});
+				return y + shapeY < height ??
+				row.every((value, x) => !value || !gameBoard[y + shapeY][x + shapeX])
+			});
 		}
 
 		const draw = () => {
@@ -82,8 +89,10 @@ export const createTetrisGame = (htmlNode) => {
 				row.forEach((value, x) => {
 					if (value) {
 						const tile = document.getElementById(`tile${(y + shapeY) * width + (x + shapeX)}`);
-						tile.dataset.movingTile = id;
-						tile.style.backgroundColor = color;
+						if (tile) {
+							tile.dataset.movingTile = id;
+							tile.style.backgroundColor = color;
+						}
 					}
 				});
 			});
