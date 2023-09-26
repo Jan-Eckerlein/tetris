@@ -1,0 +1,34 @@
+* {
+	--bg-color: #111122;
+	--text-color: #fff;
+	--tile-color: #224;
+	--tile-border-color: #111118;
+}
+
+body {
+	background-color: var(--bg-color);
+	font-family: "Source Code Pro" ;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+h1 {
+	color: var(--text-color);
+}
+
+#tetrisGameBoard {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	gap: 2px;
+	width: fit-content;
+	background-color: var(--bg-color);
+}
+
+#tetrisGameBoard .tile {
+	width: 30px;
+	height: 30px;
+	background-color: var(--tile-color);
+}
