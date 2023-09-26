@@ -78,9 +78,11 @@ export const createTetrisGame = (htmlNode) => {
 
 		const checkCollision = () => {
 			return shape.every((row, y) => {
-				console.log({y, shapeY, height});
-				return y + shapeY < height ??
-				row.every((value, x) => !value || !gameBoard[y + shapeY][x + shapeX])
+				return y + shapeY < height &&
+				row.every((value, x) => {
+					console.log({gameBoardTile: gameBoard[y + shapeY][x + shapeX]});
+					return !value || !gameBoard[y + shapeY][x + shapeX]
+				})
 			});
 		}
 
@@ -139,7 +141,6 @@ export const createTetrisGame = (htmlNode) => {
 	};
 
 	const gameLoop = (shape, shapeId) => {
-		console.log('game loop');
 		clearBoard();
 		if (!shape) {
 			shape = createNewShape(shapeId++);
@@ -162,7 +163,6 @@ export const createTetrisGame = (htmlNode) => {
 
 		setInterval(() => {
 			shape = gameLoop(shape, shapeId);
-			console.log({shape});
 		}, interval);
 
 	}
