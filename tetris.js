@@ -89,19 +89,31 @@ export const createTetrisGame = (htmlNode) => {
 			});
 		};
 
+		const addToGameBoard = (gameBoard) => {
+			shape.forEach((row, y) => {
+				row.forEach((value, x) => {
+					if (value) {
+						gameBoard[y + shapeY][x + shapeX] = color;
+					}
+				});
+			});
+		}
+
 		return {
-			id,
-			color,
-			shape,
-			shapeX,
-			shapeY,
-			shapeWidth,
-			shapeHeight,
 			moveDown,
 			checkCollision,
-			draw
+			draw,
+			addToGameBoard
 		};
 	};
+
+	const clearBoard = () => {
+		const movingTiles = gameBoardElement.querySelectorAll('[data-moving-tile]');
+		movingTiles.forEach(tile => {
+			delete tile.dataset.movingTile;
+			tile.style.removeProperty('background-color');
+		});
+	}
 
 	const updateGameBoard = () => {
 		gameBoard.forEach((row, y) => {
@@ -117,16 +129,33 @@ export const createTetrisGame = (htmlNode) => {
 		});
 	};
 
-	// const gameloop = () => {
-	// 	updateGameBoard();
-	// }
+	const gameLoop = (shape, shapeId) => {
+		console.log('game loop');
+		clearBoard();
+		if (!shape) {
+			shape = createNewShape(shapeId++);
+		}
 
-	// Start game loop
-	// setInterval(gameloop, interval);
+		if (shape.moveDown()) {
+			shape.draw();
+		} else {
+			shape.addToGameBoard(gameBoard);
+			shape = null;
+		}
+
+		updateGameBoard();
+		return shape;
+	};
 
 	const startGame = () => {
-		const shape = createNewShape();
-		shape.draw();
+		let shape;
+		let shapeId = 0;
+
+		setInterval(() => {
+			shape = gameLoop(shape, shapeId);
+			console.log({shape});
+		}, interval);
+
 	}
 
 	return {
