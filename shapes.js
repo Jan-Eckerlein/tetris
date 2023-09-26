@@ -1,4 +1,4 @@
-export const createNewShape = (gameBoard, width, height) => {
+export const createNewShape = (gameBoard, gameBoardElement, width, height) => {
 	const colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'cyan'];
 	const shapes = [
 		[
@@ -37,8 +37,29 @@ export const createNewShape = (gameBoard, width, height) => {
 			shapeY--;
 			return false;
 		} 
+		draw();
 		return true;
 	};
+
+	const moveRight = () => {
+		shapeX++;
+		if (!checkCollision()) {
+			shapeX--;
+			return false;
+		}
+		draw();
+		return true;
+	}
+
+	const moveLeft = () => {
+		shapeX--;
+		if (!checkCollision()) {
+			shapeX++;
+			return false;
+		}
+		draw();
+		return true;
+	}
 
 	const checkCollision = () => {
 		return shape.every((row, y) => {
@@ -50,6 +71,10 @@ export const createNewShape = (gameBoard, width, height) => {
 	}
 
 	const draw = () => {
+		gameBoardElement.querySelectorAll('[data-moving-tile]').forEach(tile => {
+			tile.style.removeProperty('background-color');
+		});
+
 		shape.forEach((row, y) => {
 			row.forEach((value, x) => {
 				if (value) {
@@ -73,10 +98,44 @@ export const createNewShape = (gameBoard, width, height) => {
 		});
 	}
 
+
+	const registerEvents = () => {
+		document.addEventListener('keydown', (e) => {
+			switch (e.key) {
+				case 'ArrowLeft':
+					moveLeft();
+					break;
+				case 'ArrowRight':
+					moveRight();
+					break;
+				case 'ArrowDown':
+					keepMovingDown();
+					break;
+				case 'ArrowUp':
+					rotate();
+					break;
+				default:
+					break;
+			}
+		});
+		document.addEventListener('keyup', (e) => {
+			switch (e.key) {
+				case 'ArrowDown':
+					stopMovingDown();
+					break;
+				default:
+					break;
+			}
+		});
+	};
+
 	return {
 		moveDown,
+		moveRight,
+		moveLeft,
 		checkCollision,
 		draw,
-		addToGameBoard
+		addToGameBoard,
+		registerEvents,
 	};
 };

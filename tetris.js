@@ -66,7 +66,7 @@ export const createTetrisGame = (htmlNode) => {
 	const gameLoop = (shape) => {
 		clearBoard();
 		if (!shape) {
-			shape = createNewShape(gameBoard, width, height);
+			shape = createNewShape(gameBoard, gameBoardElement, width, height);
 			if (!shape.checkCollision()) {
 				alert('Game over!');
 				shape = null;
@@ -74,6 +74,7 @@ export const createTetrisGame = (htmlNode) => {
 				initGameBoard();
 				return null;
 			}
+			shape.registerEvents();
 			shape.draw();
 		}
 
