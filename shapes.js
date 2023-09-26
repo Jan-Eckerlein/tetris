@@ -22,6 +22,9 @@ export const createNewShape = (gameBoard, gameBoardElement, width, height) => {
 		],
 	];
 
+	const movingDownInterval = 200;
+	let keepMovingDownIntervalId = null;
+
 	// Create new shape
 	const shape = shapes[Math.floor(Math.random() * shapes.length)];
 	const color = colors[Math.floor(Math.random() * colors.length)];
@@ -40,6 +43,19 @@ export const createNewShape = (gameBoard, gameBoardElement, width, height) => {
 		draw();
 		return true;
 	};
+
+	const startMovingDown = () => {
+		if (keepMovingDownIntervalId) return;
+
+		keepMovingDownIntervalId = setInterval(() => {
+			moveDown();
+		}, movingDownInterval);
+	};
+
+	const stopMovingDown = () => {
+		clearInterval(keepMovingDownIntervalId);
+		keepMovingDownIntervalId = null;
+	}
 
 	const moveRight = () => {
 		shapeX++;
@@ -98,7 +114,6 @@ export const createNewShape = (gameBoard, gameBoardElement, width, height) => {
 		});
 	}
 
-
 	const registerEvents = () => {
 		document.addEventListener('keydown', (e) => {
 			switch (e.key) {
@@ -109,7 +124,7 @@ export const createNewShape = (gameBoard, gameBoardElement, width, height) => {
 					moveRight();
 					break;
 				case 'ArrowDown':
-					keepMovingDown();
+					startMovingDown();
 					break;
 				case 'ArrowUp':
 					rotate();
